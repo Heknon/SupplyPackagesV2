@@ -35,5 +35,7 @@ public final class SupplyPackagesV2 extends JavaPlugin {
         new FileManager(this).getConfig("permissions.yml").reload();
         new FileManager(this).getConfig("placeholders.yml").reload();
         new FileManager(this).getConfig("settings.yml").reload();
+        this.getServer().getPluginManager().disablePlugin(this);
+        this.getServer().getPluginManager().enablePlugin(this);
     }
 }
