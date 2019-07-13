@@ -1,0 +1,62 @@
+colorcode: '&' # What character should be used for Chat Formatting. Example: if colorcode value is #. #6 will be gold color in chat.
+
+
+help_command: "
+  &c&lSupply&f&lPackages&c&lV2\n
+  &c&m                                    \n&r
+  &c&l/sp summon [player] &e> &fSummon a SupplyPackage at your location.\n
+  &c&l/sp givesignal [player] &e> &fGive a signal to a player.\n
+  &c&l/sp additem &e> &fAdd the held item to the SupplyPackage drop list.\n
+  &c&l/sp resetitems &e> &fReset all the drop items saved in the config.\n
+  &c&l/sp reload &e> &fReload to config file.\n
+  &c&m                                    "
+
+help_command_console: "
+  &c&lSupply&f&lPackages&c&lV2\n
+  &c&m                                    \n&r
+  &c&l/sp summon [player] &e> &fSummon a SupplyPackage at your location.\n
+  &c&l/sp givesignal [player] &e> &fGive a signal to a player.\n
+  &c&l/sp additem &e> &fAdd the held item to the SupplyPackage drop list.\n
+  &c&l/sp resetitems &e> &fReset all the drop items saved in the config.\n
+  &c&l/sp reload &e> &fReload to config file.\n
+  &c&m                                    " # permission placeholder allowed
+
+supply_package_summoned: "&7[&cSupply&fPackages&7] &ePackage has been summoned"
+
+console_cant_do_summon: "&cConsole cannot run /sp summon please try using /sp summon PLAYER_NAME"
+
+summon_with_firework: "&7[&cSupply&fPackages&7] &eA package was summon to your location" # When a supply package is summoned what message will be sent to the player.
+
+config_reload: "&7[&cSupply&fPackages&7] &eConfig &7has been reload"
+
+signal_given_to_self: "&7[&cSupply&fPackages&7] &eYou have given your self a signal!"
+
+give_signal_console_no_player_given: "&7[&cSupply&fPackages&7] &cYou must enter a player from console. /sp givesignal [Player]"
+
+invalid_player: "&e{entered_name} is not online" # What is sent if the player entered is offline or is not a valid player name.
+
+invalid_player_console: "&e{entered_name} is not online" # What is sent if the player entered is offline or is not a valid player name.
+
+summon_others_from_console_with_no_permission: "&cYou are not allowed to use this command from console." # Sent if allow_package_summoning_from_console in settings.yml is false
+
+message_sent_to_executor_summon_others: "&7A supply package was successfully sent to &e{entered_name}" # Message sent to the command executor when successfully doing /sp summon NAME
+
+message_sent_to_effected_summon_others: "&7You received a package from &e{command_exec_display_name}" # Message sent to the NAME when successfully doing /sp summon NAME
+
+message_sent_to_effected_from_console_summon_others: "&7You received a package from &eCONSOLE" # Message sent to the NAME when successfully doing /sp summon NAME when it is executed from console.
+
+message_to_signal_receiver: "&7You received a signal from &e{command_exec_display_name}"
+
+message_to_signal_sender: "&7A signal was successfully sent to &e{entered_name}"
+
+message_to_signal_receiver_from_console: "&7You received a package from &eCONSOLE" # Sent if command is sent from Console
+
+#### MISSING PERMISSION MESSAGES
+help_command_missing_permission: "&cMissing {permission} permission."
+summon_missing_permission: "&cMissing {permission} permission."
+summon_others_missing_permission: "&cMissing {permission} permission."
+reload_missing_permission: "&cMissing {permission} permission"
+use_signal_no_permission: "&cMissing {permission} permission"
+give_signal_to_self_missing_permission: "&cMissing {permission} permission"
+give_signal_to_others_missing_permission: "&cMissing {permission} permission"
+
