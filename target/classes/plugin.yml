@@ -8,4 +8,4 @@ commands:
     aliases:
       - supplypackage
       - sp
-    description: Main command.
+    description: Run this command to view a list of all commands.
