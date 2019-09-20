@@ -62,17 +62,32 @@ public class Utils {
         return Bukkit.getPlayer(playerName) != null;
     }
 
-    private ItemStack giveSignal(String SPName) {
-        List<String> lore = packages.get().getStringList("packages." + SPName + ".firework_meta.lore").stream().map(this::ChatColorFormat).collect(Collectors.toList());
-
-        String displayName = ChatColorFormat(packages.get().getString("firework_meta.display_name"));
-        ItemStack firework = new ItemStack(Material.FIREWORK, 1);
-        ItemMeta fwMeta = firework.getItemMeta();
-        fwMeta.setDisplayName(displayName);
-        fwMeta.setLore(lore);
-        firework.setItemMeta(fwMeta);
-        return firework;
+    public List<String> getSignalLore(String SPName) {
+        return packages.get().getStringList("packages." + SPName + ".signal.lore").stream().map(this::ChatColorFormat).collect(Collectors.toList());
     }
+
+    public String getSignalName(String SPName) {
+        return ChatColorFormat(packages.get().getString("packages." + SPName + ".signal.display_name"));
+    }
+
+    public Material getSignalMaterial(String SPName) {
+        try {
+            return Material.valueOf(packages.get().getString("packages." + SPName + ".signal.material"));
+        } catch (NullPointerException ignored) {
+            packages.get().set("packages." + SPName + ".signal.material", "FIREWORK");
+            return Material.FIREWORK;
+        }
+    }
+
+    public ItemStack createSignal(Material signalMaterial, String signalName, List<String> signalLore) {
+        ItemStack signal = new ItemStack(signalMaterial, 1);
+        ItemMeta signalMeta = signal.getItemMeta();
+        signalMeta.setDisplayName(signalName);
+        signalMeta.setLore(signalLore);
+        signal.setItemMeta(signalMeta);
+        return signal;
+    }
+
     public boolean isValidSP(String SPName) {
         for (String itemList : packages.get().getConfigurationSection("packages").getKeys(false)) {
             if (itemList.equalsIgnoreCase(SPName)) return true;

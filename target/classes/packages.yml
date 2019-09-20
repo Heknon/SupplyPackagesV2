@@ -25,6 +25,14 @@ packages:
     falling_block_speed_X_Vector: 0.0 # Vector... The lower the faster
     falling_block_speed_Y_Vector: -1.0 # Vector... The lower the faster
     falling_block_speed_Z_Vector: 0.0 # Vector... The lower the faster
+    signal:
+      material: "FIREWORK"
+      display_name: "&c&lSupply&f&lPackages"
+      lore:
+        [
+          "&6Launch this firework",
+          "&6to summon a SupplyPackage"
+        ]
   'othername':
     items:
       ["DIAMOND, 64",
@@ -45,13 +53,17 @@ packages:
     effect_till_claim: "ENDER_SIGNAL"
     sound_till_claim: 'disable'
     lightning_on_land: true
+    falling_block_speed_X_Vector: 0.0 # Vector... The lower the faster
+    falling_block_speed_Y_Vector: -1.0 # Vector... The lower the faster
+    falling_block_speed_Z_Vector: 0.0 # Vector... The lower the faster
+    signal:
+      material: "FIREWORK"
+      display_name: "&c&lSupply&f&lPackages"
+      lore:
+        [
+          "&6Launch this firework",
+          "&6to summon a SupplyPackage"
+        ]
 
 
 default_supply_package: 'name' # The default supply package can be summon by entering /sp summon without any name If name is invalid it will be set to the first package.
-firework_meta:
-  display_name: "&c&lSupply&f&lPackages"
-  lore:
-    [
-      "&6Launch this firework",
-      "&6to summon a SupplyPackage"
-    ]

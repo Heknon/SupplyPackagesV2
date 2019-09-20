@@ -1,3 +1,45 @@
+##################################################
+################## PLACEHOLDERS ##################
+##################################################
+
+# {permission}  -  Placeholder that returns the permission needed to use a command that may need X permission. EXAMPLE, if you put this in the help message it will replace "{permission}" with "supplypackages.help"
+# {command_exec_name}  -  Placeholder that returns the name of the command executor.
+# {command_exec_display_name}  -  Placeholder that returns the display name of the command executor AKA nickname...
+# {entered_player_name} - Returns the word entered on commands such as /sp summon playerName packageName. Will return the name of the player entered...
+# {entered_player_display_name} - Returns the word entered on commands such as /sp summon playerName packageName. Will return playerName's nickname...
+# {entered_arg} - Returns the word entered on commands such as /sp summon playerName packageName. Will return playerName... Will work also if it is an invalid player name...
+# {package_name} - Returns the name of the package, the name entered in packages.yml
+# {item}  -  Returns the item and the amount you are holding, works only with messages relating to changing packages.yml
+# {x}, {y}, {z} returns the x, y, z places of the place where the command was executed.
+
+
+#################################################
+################## PERMISSIONS ##################
+#################################################
+
+
+##########################################################################################
+# MAIN PERMISSIONS                                                                       #
+# supplypackages.reload - Permission to reload the plugin.                               #
+# supplypackages.help" - Permission to run the help command and view the help page.      #
+# supplypackages.additem" - Permission to run /sp additem                                #
+# supplypackages.resetitems" - Permission to run /sp resetitems                          #
+##########################################################################################
+
+
+
+####################################################################################################################
+# SUMMON PERMISSIONS                                                                                               #
+# supplypackages.summon.default -  Permission to summon the default package.                                       #
+# supplypackages.summon.default.others" - Permission to summon the default package for others.                     #
+# supplypackages.summon.default.PLAYERNAME" - Permission to summon the default package for a specific player.      #
+# supplypackages.summon.packagename" - Permission to summon a certain package.                                     #
+# supplypackages.usesignal" - Permission to use the summon signal.                                                 #
+# supplypackages.givesignal.self - Permission to give yourself a summon signal.                                    #
+# supplypackages.givesignal.others" - Permission to give others a summon signal.                                   #
+####################################################################################################################
+
+
 colorcode: '&' # What character should be used for Chat Formatting. Example: if colorcode value is '.' '.6' will be gold color in chat.
 
 unknown_command: "&5&l[&c&lSupply&f&lPackages&c&lV2&5&l] &eInvalid command syntax try /sp help"
@@ -51,13 +93,19 @@ summon:
       summon_by_name: "&cYou do not have permission to summon {package_name}, {permission}"
 
 
+givesignal:
+  default: "&7You received a signal to summon the default package"
+  defaultOthers: "&7You received a signal to summon the default package &7from &e{command_exec_display_name}"
+  defaultOthersConfirmation: "&7You gave &e{entered_player_name} &7a signal to summon the default package"
+
+  signal: "&7You received a signal to summon &e{package_name}"
+  signalOther: "&7You received a signal to summon &e{package_name} &7from &e{command_exec_display_name}"
+  signalOthersConfirmation: "&7You gave {entered_player_name}"
+
+  invalidPackageName: "&e{entered_arg} &7is not a valid package name."
 
 
 
-
-
-
-#### MISSING PERMISSION MESSAGES
 
 summon_missing_permission: "&cMissing {permission} permission."
 summon_others_missing_permission: "&cMissing {permission} permission."
@@ -70,43 +118,3 @@ missing_reset_items_permission: "&cMissing {permission} permission"
 
 
 
-##################################################
-################## PLACEHOLDERS ##################
-##################################################
-
-# {permission}  -  Placeholder that returns the permission needed to use a command that may need X permission. EXAMPLE, if you put this in the help message it will replace "{permission}" with "supplypackages.help"
-# {command_exec_name}  -  Placeholder that returns the name of the command executor.
-# {command_exec_display_name}  -  Placeholder that returns the display name of the command executor AKA nickname...
-# {entered_player_name} - Returns the word entered on commands such as /sp summon playerName packageName. Will return the name of the player entered...
-# {entered_player_display_name} - Returns the word entered on commands such as /sp summon playerName packageName. Will return playerName's nickname...
-# {entered_arg} - Returns the word entered on commands such as /sp summon playerName packageName. Will return playerName... Will work also if it is an invalid player name...
-# {package_name} - Returns the name of the package, the name entered in packages.yml
-# {item}  -  Returns the item and the amount you are holding, works only with messages relating to changing packages.yml
-# {x}, {y}, {z} returns the x, y, z places of the place where the command was executed.
-
-
-#################################################
-################## PERMISSIONS ##################
-#################################################
-
-
-##########################################################################################
-# MAIN PERMISSIONS                                                                       #
-# supplypackages.reload - Permission to reload the plugin.                               #
-# supplypackages.help" - Permission to run the help command and view the help page.      #
-# supplypackages.additem" - Permission to run /sp additem                                #
-# supplypackages.resetitems" - Permission to run /sp resetitems                          #
-##########################################################################################
-
-
-
-####################################################################################################################
-# SUMMON PERMISSIONS                                                                                               #
-# supplypackages.summon.default -  Permission to summon the default package.                                       #
-# supplypackages.summon.default.others" - Permission to summon the default package for others.                     #
-# supplypackages.summon.default.PLAYERNAME" - Permission to summon the default package for a specific player.      #
-# supplypackages.summon.packagename" - Permission to summon a certain package.                                     #
-# supplypackages.usesignal" - Permission to use the summon signal.                                                 #
-# supplypackages.givesignal.self - Permission to give yourself a summon signal.                                    #
-# supplypackages.givesignal.others" - Permission to give others a summon signal.                                   #
-####################################################################################################################

@@ -58,31 +58,12 @@ public class SummonFallingBlock implements Listener {
         }
     }
 
-    private void spawnFireworks(Location location, int amount, String SPName) {
-        HashMap<String, Color> map = new HashMap<>();
-        map.put("AQUA", Color.YELLOW);
-        map.put("BLACK", Color.BLACK);
-        map.put("BLUE", Color.BLUE);
-        map.put("FUCHSIA", Color.FUCHSIA);
-        map.put("GRAY", Color.GRAY);
-        map.put("GREEN", Color.GREEN);
-        map.put("LIME", Color.LIME);
-        map.put("MAROON", Color.MAROON);
-        map.put("NAVY", Color.NAVY);
-        map.put("OLIVE", Color.OLIVE);
-        map.put("ORANGE", Color.ORANGE);
-        map.put("PURPLE", Color.PURPLE);
-        map.put("RED", Color.RED);
-        map.put("SILVER", Color.SILVER);
-        map.put("TEAL", Color.TEAL);
-        map.put("WHITE", Color.WHITE);
-        map.put("YELLOW", Color.YELLOW);
-        Location loc = location;
+    private void spawnFireworks(Location loc, int amount, String SPName) {
         Firework fw = (Firework) loc.getWorld().spawnEntity(loc, EntityType.FIREWORK);
         FireworkMeta fwm = fw.getFireworkMeta();
 
         fwm.setPower(2);
-        fwm.addEffect(FireworkEffect.builder().withColor(map.get(packages.get().getString("packages." + SPName + ".fireworks_color"))).flicker(true).build());
+        fwm.addEffect(FireworkEffect.builder().withColor(plugin.stringToColor.get(packages.get().getString("packages." + SPName + ".fireworks_color"))).flicker(true).build());
 
         fw.setFireworkMeta(fwm);
         fw.setInvulnerable(true);

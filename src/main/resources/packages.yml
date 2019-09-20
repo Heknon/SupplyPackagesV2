@@ -25,7 +25,8 @@ packages:
     falling_block_speed_X_Vector: 0.0 # Vector... The lower the faster
     falling_block_speed_Y_Vector: -1.0 # Vector... The lower the faster
     falling_block_speed_Z_Vector: 0.0 # Vector... The lower the faster
-    firework_meta:
+    signal:
+      material: "FIREWORK"
       display_name: "&c&lSupply&f&lPackages"
       lore:
         [
@@ -55,7 +56,8 @@ packages:
     falling_block_speed_X_Vector: 0.0 # Vector... The lower the faster
     falling_block_speed_Y_Vector: -1.0 # Vector... The lower the faster
     falling_block_speed_Z_Vector: 0.0 # Vector... The lower the faster
-    firework_meta:
+    signal:
+      material: "FIREWORK"
       display_name: "&c&lSupply&f&lPackages"
       lore:
         [

@@ -3,7 +3,9 @@ package me.heknon.supplypackagesv2.Commands;
 import me.heknon.supplypackagesv2.FileManager;
 import me.heknon.supplypackagesv2.SupplyPackagesV2;
 import me.heknon.supplypackagesv2.Utils.Utils;
+import org.bukkit.BanList;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -30,11 +32,23 @@ public class ConnectCommands implements CommandExecutor {
             } else if (args[0].equalsIgnoreCase("summon")) {
                 SummonCommand summonCommand = new SummonCommand();
                 if (!(sender instanceof Player)) {
-                    Bukkit.getServer().getConsoleSender().sendMessage(messages.get().getString("only_players"));
+                    Bukkit.getServer().getConsoleSender().sendMessage(utils.ChatColorFormat(messages.get().getString("only_players")));
+                    return false;
                 }
                 Player player = (Player) sender;
                 return summonCommand.playerSummonDefaultSelf(player);
 
+            } else if (args[0].equalsIgnoreCase("givesignal")) {
+                GiveSignalCommand giveSignalCommand = new GiveSignalCommand();
+                if (!(sender instanceof Player)) {
+                    Bukkit.getServer().getConsoleSender().sendMessage(utils.ChatColorFormat(messages.get().getString("only_players")));
+                    return false;
+                }
+                return giveSignalCommand.giveSignalSelfDefault(((Player) sender));
+
+            } else if (args[0].equalsIgnoreCase("reload")) {
+                plugin.pluginReload();
+                return true;
             }
             else return unknownCommand(sender);
 
@@ -52,6 +66,19 @@ public class ConnectCommands implements CommandExecutor {
                 if (!utils.stringIsValidPlayer(args[1]) || !utils.isValidSP(args[1])) {
                     String message = messages.get().getString("summon.others.invalid_player_package_name");
                     message = utils.replacer(message, (Player) sender, null, args[1], args[1], ((Player) sender).getLocation(), null);
+                    sender.sendMessage(utils.ChatColorFormat(message));
+                    return false;
+                }
+            } else if (args[0].equalsIgnoreCase("givesignal")) {
+                if (utils.stringIsValidPlayer(args[1])) {
+                    Player player = (Player) sender;
+                    return new GiveSignalCommand().giveSignalOtherDefault(player, Bukkit.getPlayer(args[1]), args[1]);
+                } else if (utils.isValidSP(args[1])) {
+                    Player player = (Player) sender;
+                    return new GiveSignalCommand().giveSignalSelf(player, args[1]);
+                } else {
+                    String message = messages.get().getString("summon.others.invalid_player_package_name");
+                    message = utils.replacer(message, Bukkit.getPlayer(args[1]), null, args[1], args[1], Bukkit.getPlayer(args[1]).getLocation(), null);
                     sender.sendMessage(utils.ChatColorFormat(message));
                     return false;
                 }
@@ -75,6 +102,8 @@ public class ConnectCommands implements CommandExecutor {
                     return false;
                 }
                 return new SummonCommand().playerSummonOthers((Player) sender, Bukkit.getPlayer(args[2]), args[2], args[1]);
+
+            } else if (args[0].equalsIgnoreCase("givesignal")) {
 
             }
         }
