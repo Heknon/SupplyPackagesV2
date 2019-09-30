@@ -1,7 +1,0 @@
-command_permission: "{permission}"
-
-command_exec_name: "{command_exec_name}"
-
-command_exec_displayname: "{command_exec_display_name}"
-
-entered_name: "{entered_name}"

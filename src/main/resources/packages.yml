@@ -1,30 +1,43 @@
 # All materials you can use are here: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
 # Amount can't be above 64
 # Separate item and amount exactly like this example.
+# summon_message and summon_broadcast which are in "signal" are the messages sent when summoning with a signal.
 packages:
   'name':
     items:
-      ["APPLE, 64",
-      "APPLE, 64",
-      "DIAMOND, 1",
-      "BOOK, 18"]
+      1:
+        material: "APPLE"
+        amount: 64
+        NBT:
+          tag: false
+      2:
+        material: "DIAMOND"
+        amount: 1
+        NBT:
+          Unbreakable: true
+      3:
+        material: "BOOK"
+        amount: 64
+        NBT:
+          tag: "tag"
+          anothertag: 4324
+          anotherXtag: true
     messages:
-      broadcast_message: "&7A supply package was summoned at &8(&ex{x}, y{y}, z{z}&8)"
-      claim_message: "&7You have claimed &e{package_name} &7at &8(&ex{x}, y{y}, z{z}&8)"
-      broadcast_claim: "&e{command_exec_name} &7has claimed &e{package_name} &7at &8(&ex{x}, y{y}, z{z}&8)"
-    material_on_land: "JUKEBOX"
-    material_falling: "BEACON"
-    fireworks_to_summon_on_summon: 3
-    fireworks_color: "RED"
-    firwork_follow_package: true
+      claim_message: "&7You claimed &e{package_name} &7package &7at &8(&ex{x}, y{y}, z{z}&8)"
+      claim_broadcast: "&e{claimer} &7has claimed &e{package_name} &7at &8(&ex{x}, y{y}, z{z}&8)"
+      summon_message: "&eYou &7have summoned &e{package_name} &7at &8(&ex{x}, y{y}, z{z}&8)"
+      summon_broadcast: "&e{summoner} &7has summoned &e{package_name} &7at &8(&ex{x}, y{y}, z{z}&8)"
+    landing_material: "JUKEBOX"
+    falling_material: "BEACON"
     sound_on_claim: "DRAGON_BREATH"
     effect_on_claim: "MOBSPAWNER_FLAMES"
     effect_till_claim: "ENDER_SIGNAL"
     sound_till_claim: 'disable'
     lightning_on_land: true
-    falling_block_speed_X_Vector: 0.0 # Vector... The lower the faster
-    falling_block_speed_Y_Vector: -1.0 # Vector... The lower the faster
-    falling_block_speed_Z_Vector: 0.0 # Vector... The lower the faster
+    firework:
+      fireworks_on_summon: 3
+      fireworks_color: "RED"
+      firwork_follow_package: true
     signal:
       material: "FIREWORK"
       display_name: "&c&lSupply&f&lPackages"
@@ -33,29 +46,39 @@ packages:
           "&6Launch this firework",
           "&6to summon a SupplyPackage"
         ]
+      summon_message: "&eYou &7have summoned &e{package_name} &7at &8(&ex{x}, y{y}, z{z}&8)"
+      summon_broadcast: "&e{summoner} &7has summoned &e{package_name} &7at &8(&ex{x}, y{y}, z{z}&8)"
   'othername':
     items:
-      ["DIAMOND, 64",
-       "APPLE, 64",
-       "BEDROCK, 1",
-       "BOOK, 18"]
+      1:
+        material: "APPLE"
+        amount: 64
+        NBT:
+          tag: "value"
+      2:
+        material: "DIAMOND"
+        amount: 1
+      3:
+        material: "BOOK"
+        amount: 64
+        NBT:
+          tag: "value"
     messages:
-      broadcast_message: "&7A supply package was summoned at &8(&ex{x}, y{y}, z{z}&8)"
-      claim_message: "&7You claimed &e{package_name} &7package"
-      broadcast_claim: "{command_exec_display_name} &7has claimed &e{package_name} &7at &8(&ex{x}, y{y}, z{z}&8)"
-    material_on_land: "JUKEBOX"
-    material_falling: "BEACON"
-    fireworks_to_summon_on_summon: 3
-    fireworks_color: "RED"
-    firwork_follow_package: true
+      claim_message: "&7You claimed &e{package_name} &7package &7at &8(&ex{x}, y{y}, z{z}&8)"
+      claim_broadcast: "&e{claimer} &7has claimed &e{package_name} &7at &8(&ex{x}, y{y}, z{z}&8)"
+      summon_message: "&eYou &7have summoned &e{package_name} &7at &8(&ex{x}, y{y}, z{z}&8)"
+      summon_broadcast: "&e{summoner} &7has summoned &e{package_name} &7at &8(&ex{x}, y{y}, z{z}&8)"
+    landing_material: "JUKEBOX"
+    falling_material: "BEACON"
     sound_on_claim: "DRAGON_BREATH"
-    effect_on_claim: "ENDERDRAGON_GROWL"
+    effect_on_claim: "MOBSPAWNER_FLAMES"
     effect_till_claim: "ENDER_SIGNAL"
     sound_till_claim: 'disable'
     lightning_on_land: true
-    falling_block_speed_X_Vector: 0.0 # Vector... The lower the faster
-    falling_block_speed_Y_Vector: -1.0 # Vector... The lower the faster
-    falling_block_speed_Z_Vector: 0.0 # Vector... The lower the faster
+    firework:
+      amount: 3
+      color: "RED"
+      follow_package: true
     signal:
       material: "FIREWORK"
       display_name: "&c&lSupply&f&lPackages"
@@ -64,6 +87,8 @@ packages:
           "&6Launch this firework",
           "&6to summon a SupplyPackage"
         ]
+      summon_message: "&eYou &7have summoned &e{package_name} &7at &8(&ex{x}, y{y}, z{z}&8)"
+      summon_broadcast: "&e{summoner} &7has summoned &e{package_name} using a signal &7at &8(&ex{x}, y{y}, z{z}&8)"
 
 
 default_supply_package: 'name' # The default supply package can be summon by entering /sp summon without any name If name is invalid it will be set to the first package.

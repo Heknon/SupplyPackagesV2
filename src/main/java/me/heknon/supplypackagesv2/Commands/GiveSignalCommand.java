@@ -1,89 +1,75 @@
 package me.heknon.supplypackagesv2.Commands;
 
-import de.tr7zw.itemnbtapi.NBTItem;
-import me.heknon.supplypackagesv2.FileManager;
+import me.heknon.supplypackagesv2.API.Events.SignalSentEvent;
+import me.heknon.supplypackagesv2.Commands.CommandManager.SubCommand;
+import me.heknon.supplypackagesv2.SupplyPackage.Package;
 import me.heknon.supplypackagesv2.SupplyPackagesV2;
+import me.heknon.supplypackagesv2.Utils.Message;
 import me.heknon.supplypackagesv2.Utils.Utils;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.List;
+public class GiveSignalCommand extends SubCommand {
 
-public class GiveSignalCommand {
-
-    private Utils utils = new Utils();
     private SupplyPackagesV2 plugin = JavaPlugin.getPlugin(SupplyPackagesV2.class);
-    private FileManager.Config packages = new FileManager(plugin).getConfig("packages.yml");
-    private FileManager.Config messages = new FileManager(plugin).getConfig("messages.yml");
-    private ConfigurationSection givesignal = messages.get().getConfigurationSection("givesignal");
+    private YamlConfiguration messages = plugin.getConfigManager().getConfig("messages.yml").get();
+    private String notOnline = messages.getString("not_online");
+    private String invalidPackage = messages.getString("invalid_package_name");
 
-    public boolean giveSignalSelfDefault(Player player) {
-        String permission = "supplypackages.givesignal.default.self";
-        if (!player.hasPermission(permission))  {
-            player.sendMessage(ChatColor.DARK_RED + "You do not have permission to use this command!");
-            return false;
+    @Override
+    public void onCommand(CommandSender sender, String[] args) {
+        if (args.length == 0) {
+            if (Utils.notPlayerSenderCheck(sender)) return;
+            Package sp = Package.getDefaultPackageInstance();
+            Player receiver = (Player) sender;
+            addSignalAndCallEvent(receiver, sp, sender);
+        } else if (args.length == 1) {
+            Player receiver = Bukkit.getPlayer(args[0]);
+            if (receiver == null || !receiver.isOnline()) {
+                new Message(notOnline, sender, false).setToggleable(true).chat();
+                return;
+            }
+            Package sp = Package.getDefaultPackageInstance();
+            addSignalAndCallEvent(receiver, sp, sender);
+        } else if (args.length == 2) {
+            Player receiver = Bukkit.getPlayer(args[0]);
+            if (receiver == null || !receiver.isOnline()) {
+                new Message(notOnline, sender, false).setToggleable(true).chat();
+                return;
+            } else if (!Package.isValidPackageName(args[1])) {
+                new Message(invalidPackage, sender, false).setToggleable(true).chat();
+                return;
+            }
+            Package sp = new Package(args[1]);
+            addSignalAndCallEvent(receiver, sp, sender);
         }
-        String SPName = packages.get().getString("default_supply_package");
-        giveSignal(player, SPName);
-        player.sendMessage(utils.ChatColorFormat(utils.replacer(givesignal.getString("default"), player, null, null, SPName, player.getLocation(), permission)));
-        return true;
     }
 
-    public boolean giveSignalSelf(Player player, String SPName) {
-        String permission = "supplypackages.givesignal.self";
-        if (!player.hasPermission(permission))  {
-            player.sendMessage(ChatColor.DARK_RED + "You do not have permission to use this command!");
-            return false;
-        }
-        if (!utils.isValidSP(SPName)) {
-            player.sendMessage(utils.ChatColorFormat(utils.replacer(givesignal.getString("invalidPackageName"), player, null, SPName, SPName, player.getLocation(), permission)));
-            return false;
-        }
-        giveSignal(player, SPName);
-        player.sendMessage(utils.ChatColorFormat(utils.replacer(givesignal.getString("signal"), player, null, null, SPName, player.getLocation(), permission)));
-        return true;
+    @Override
+    public String name() {
+        return "givesignal";
     }
 
-    public boolean giveSignalOtherDefault(Player player, Player otherPlayer, String otherArg) {
-        String permission = "supplypackages.givesignal.default.others";
-        if (!player.hasPermission(permission))  {
-            player.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
-            return false;
-        }
-        String SPName = packages.get().getString("default_supply_package");
-        giveSignal(otherPlayer, SPName);
-        otherPlayer.sendMessage(utils.ChatColorFormat(utils.replacer(givesignal.getString("defaultOthers"), player, otherPlayer, otherArg, SPName, otherPlayer.getLocation(), permission)));
-        player.sendMessage(utils.ChatColorFormat(utils.replacer(givesignal.getString("defaultOthersConfirmation"), player, otherPlayer, otherArg, SPName, otherPlayer.getLocation(), permission)));
-        return true;
+    @Override
+    public String permission() {
+        return "supplypackages.givesignal";
     }
 
-    public boolean giveSignalOther(Player player, Player otherPlayer, String otherArg, String SPName) {
-        String permission = "supplypackages.givesignal.others";
-        if (!player.hasPermission(permission))  {
-            player.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
-            return false;
-        }
-        if (!utils.isValidSP(SPName)) {
-            player.sendMessage(utils.ChatColorFormat(utils.replacer(givesignal.getString("invalidPackageName"), player, otherPlayer, otherArg, SPName, player.getLocation(), permission)));
-            return false;
-        }
-        giveSignal(otherPlayer, SPName);
-        otherPlayer.sendMessage(utils.ChatColorFormat(utils.replacer(givesignal.getString("signalOthers"), player, otherPlayer, otherArg, SPName, otherPlayer.getLocation(), permission)));
-        player.sendMessage(utils.ChatColorFormat(utils.replacer(givesignal.getString("signalOthersConfirmation"), player, otherPlayer, otherArg, SPName, otherPlayer.getLocation(), permission)));
-        return true;
+    @Override
+    public String[] aliases() {
+        return new String[0];
     }
 
-    private void giveSignal(Player otherPlayer, String SPName) {
-        List<String> signalLore = utils.getSignalLore(SPName);
-        String signalName = utils.getSignalName(SPName);
-        Material signalMaterial = utils.getSignalMaterial(SPName);
-        ItemStack signal = utils.createSignal(signalMaterial, signalName, signalLore);
-        NBTItem item = new NBTItem(signal);
-        item.setString("SupplyPackages", SPName);
-        otherPlayer.getInventory().addItem(item.getItem());
+
+    private void addSignalAndCallEvent(Player receiver, Package sp, CommandSender sender) {
+        if (receiver.getInventory().firstEmpty() != -1)
+            receiver.getInventory().addItem(sp.getSignal().getSignalStack()); // inventory not full so add to inventory
+        else
+            receiver.getLocation().getWorld().dropItem(receiver.getLocation(), sp.getSignal().getSignalStack()); // Inventory full so drop on floor
+        SignalSentEvent signalSentEvent = new SignalSentEvent(sender, receiver, sp);
+        Bukkit.getServer().getPluginManager().callEvent(signalSentEvent);
     }
 }
