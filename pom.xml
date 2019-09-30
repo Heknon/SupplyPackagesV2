@@ -75,11 +75,5 @@
             <version>1.12.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>com.github.tr7zw</groupId>
-            <artifactId>Item-NBT-API</artifactId>
-            <version>master</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 </project>

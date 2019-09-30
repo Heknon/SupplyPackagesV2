@@ -1,121 +1,77 @@
 package me.heknon.supplypackagesv2.Utils;
 
-import me.heknon.supplypackagesv2.FileManager;
 import me.heknon.supplypackagesv2.SupplyPackagesV2;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Utils {
 
-    private SupplyPackagesV2 plugin = SupplyPackagesV2.getPlugin(SupplyPackagesV2.class);
-    private final FileManager.Config messages = new FileManager(plugin).getConfig("messages.yml");
-    private final FileManager.Config packages = new FileManager(plugin).getConfig("packages.yml");
+    private static SupplyPackagesV2 plugin = JavaPlugin.getPlugin(SupplyPackagesV2.class);
+    private static YamlConfiguration messages = plugin.getConfigManager().getConfig("messages.yml").get();
+    private static String playerUsageOnly = messages.getString("only_players");
 
-    public String ChatColorFormat(String s) {
-        char altColorChar = messages.get().getString("colorcode").charAt(0);
-        return ChatColor.translateAlternateColorCodes(altColorChar, s);
+    /**
+     * Send message to all server operators
+     *
+     * @param message the message to send
+     */
+    public static void sendOPMessage(Message message) {
+        Set<CommandSender> onlineOperators = getOnlineOperators();
+        message.setRecipients(onlineOperators);
+        message.chat();
     }
 
-    public String replacer(String message, Player player, Player otherPlayer, String enteredArgs, String packageName, Location loc, String permission) {
-        String playerName;
-        String playerDisplayName;
-        String otherPlayerName;
-        String otherPlayerDisplayName;
-        enteredArgs = (enteredArgs == null) ? "" : enteredArgs;
-        packageName = (packageName == null) ? "" : packageName;
-        otherPlayerName = (otherPlayer == null) ? "" : otherPlayer.getName();
-        otherPlayerDisplayName = (otherPlayer == null) ? "" : otherPlayer.getDisplayName();
-        playerName = (player == null) ? "" : player.getName();
-        playerDisplayName = (player == null) ? "" : player.getDisplayName();
-        if (permission == null) permission = "";
-        String x = String.valueOf((int)loc.getX());
-        String y = String.valueOf((int)loc.getY());
-        String z = String.valueOf((int)loc.getZ());
-        if (loc == null) x = "";
-        if (loc == null) y = "";
-        if (loc == null) z = "";
+    public static boolean stringIsMaterial(String material) {
         try {
-            message = message.replace("{permission}", permission);
-            message = message.replace("{command_exec_name}", playerName);
-            message = message.replace("{command_exec_display_name}", playerDisplayName);
-            message = message.replace("{entered_player_display_name}", otherPlayerDisplayName);
-            message = message.replace("{x}", x);
-            message = message.replace("{y}", y);
-            message = message.replace("{z}", z);
-            message = message.replace("{entered_player_name}", otherPlayerName);
-            message = message.replace("{entered_arg}", enteredArgs);
-            message = message.replace("{package_name}", packageName);
-        } catch (NullPointerException ignored) {}
-        return message;
-    }
-
-    public boolean stringIsValidPlayer(String playerName) {
-        return Bukkit.getPlayer(playerName) != null;
-    }
-
-    public List<String> getSignalLore(String SPName) {
-        return packages.get().getStringList("packages." + SPName + ".signal.lore").stream().map(this::ChatColorFormat).collect(Collectors.toList());
-    }
-
-    public String getSignalName(String SPName) {
-        return ChatColorFormat(packages.get().getString("packages." + SPName + ".signal.display_name"));
-    }
-
-    public Material getSignalMaterial(String SPName) {
-        try {
-            return Material.valueOf(packages.get().getString("packages." + SPName + ".signal.material"));
-        } catch (NullPointerException ignored) {
-            packages.get().set("packages." + SPName + ".signal.material", "FIREWORK");
-            return Material.FIREWORK;
+            Material.valueOf(material);
+        } catch(IllegalArgumentException ignored) {
+            return false;
         }
+        return true;
     }
 
-    public ItemStack createSignal(Material signalMaterial, String signalName, List<String> signalLore) {
-        ItemStack signal = new ItemStack(signalMaterial, 1);
-        ItemMeta signalMeta = signal.getItemMeta();
-        signalMeta.setDisplayName(signalName);
-        signalMeta.setLore(signalLore);
-        signal.setItemMeta(signalMeta);
-        return signal;
+    public static boolean stringIsBoolean(String bool) {
+        return bool.equals("true") || bool.equals("false");
     }
 
-    public boolean isValidSP(String SPName) {
-        for (String itemList : packages.get().getConfigurationSection("packages").getKeys(false)) {
-            if (itemList.equalsIgnoreCase(SPName)) return true;
+    public static boolean notPlayerSenderCheck(CommandSender sender) {
+        if (!(sender instanceof Player)) {
+            new Message(playerUsageOnly, sender, false).chat();
+            return true;
         }
         return false;
     }
 
-    public List<String> getSPItemsFromName(String SPName) {
-        return packages.get().getStringList("packages." + SPName + ".items");
+    private static Set<CommandSender> getOnlineOperators() {
+        Set<OfflinePlayer> operators = Bukkit.getServer().getOperators();
+        return operators.stream().filter(OfflinePlayer::isOnline).map(offlinePlayer -> (CommandSender) offlinePlayer).collect(Collectors.toSet());
     }
 
-    public String getSoundOnClaimFromName(String SPName) {
-        return packages.get().getString("packages." + SPName + ".sound_on_claim");
+    public static HashMap<String, String> getConfigCorrespondingKeyValueMap(ConfigurationSection section) {
+        HashMap<String, String> returnValue = new HashMap<String, String>();
+        for (String key : section.getKeys(false)) {
+            String value = section.getString(key);
+            returnValue.putIfAbsent(key, value);
+        }
+        return returnValue;
     }
 
-    public String getSoundTilLClaimFromName(String SPName) {
-        return packages.get().getString("packages." + SPName + ".sound_till_claim");
-    }
-
-    public String getEffectOnClaimFromName(String SPName) {
-        return packages.get().getString("packages." + SPName + ".effect_on_claim");
-    }
-
-    public String getEffectTillClaimFromName(String SPName) {
-        return packages.get().getString("packages." + SPName + ".effect_till_claim");
-    }
-
-    public List<String> getNamesOfSupplyPackages() {
-        return new ArrayList<>(packages.get().getConfigurationSection("packages").getKeys(false));
+    public static boolean isNumeric(String str) {
+        try {
+            Double.parseDouble(str);
+        } catch (NumberFormatException | NullPointerException e) {
+            return false;
+        }
+        return true;
     }
 }

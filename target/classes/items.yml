@@ -1,6 +1,0 @@
-# All materials you can use are here: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
-items:
-  ["APPLE, 64", # Separate item and amount exactly like this example.
-  "APPLE, 132",
-  "DIAMOND, 1",
-  "BOOK, 18"]
