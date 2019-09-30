@@ -1,11 +1,8 @@
 package me.heknon.supplypackagesv2;
 
+import me.heknon.supplypackagesv2.Commands.*;
 import me.heknon.supplypackagesv2.Commands.CommandManager.CommandManager;
 import me.heknon.supplypackagesv2.Commands.CommandManager.SPTabComplete;
-import me.heknon.supplypackagesv2.Commands.GiveSignalCommand;
-import me.heknon.supplypackagesv2.Commands.ReloadCommand;
-import me.heknon.supplypackagesv2.Commands.ResetItemsCommand;
-import me.heknon.supplypackagesv2.Commands.SummonCommand;
 import me.heknon.supplypackagesv2.Listeners.PackageClaim;
 import me.heknon.supplypackagesv2.Listeners.PackageSent;
 import me.heknon.supplypackagesv2.Listeners.PlayerGetRewards;
@@ -46,7 +43,7 @@ public final class SupplyPackagesV2 extends JavaPlugin {
         commandManager = new CommandManager();
         this.getCommand("supplypackages").setExecutor(commandManager);
         this.getCommand("supplypackages").setTabCompleter(new SPTabComplete());
-        commandManager.commands.addAll(Arrays.asList(new SummonCommand(), new GiveSignalCommand(), new ReloadCommand(), new ResetItemsCommand()));
+        commandManager.commands.addAll(Arrays.asList(new SummonCommand(), new GiveSignalCommand(), new ReloadCommand(), new AddItemCommand(), new ResetItemsCommand()));
     }
 
     private void registerEvents() {

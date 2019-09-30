@@ -9,3 +9,22 @@ commands:
       - supplypackage
       - sp
     description: Run this command to view a list of all commands.
+permissions:
+  supplypackages.help:
+    description: View help page
+    default: op
+  supplypackages.summon:
+    description: summon package
+    default: op
+  supplypackages.givesignal:
+    description: give signal to a player
+    default: op
+  supplypackages.reload:
+    description: reload the config
+    default: op
+  supplypackages.additem:
+    description: add item to a package
+    default: op
+  supplypackages.resetitems:
+    description: reset the package items
+    default: op

@@ -3,17 +3,15 @@ package me.heknon.supplypackagesv2.Commands;
 import me.heknon.supplypackagesv2.Commands.CommandManager.SubCommand;
 import me.heknon.supplypackagesv2.SupplyPackage.Package;
 import me.heknon.supplypackagesv2.SupplyPackagesV2;
+import me.heknon.supplypackagesv2.Utils.ConfigManager;
 import me.heknon.supplypackagesv2.Utils.Message;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 
 public class ResetItemsCommand extends SubCommand {
 
@@ -23,9 +21,12 @@ public class ResetItemsCommand extends SubCommand {
 
     @Override
     public void onCommand(CommandSender sender, String[] args) {
+        ConfigManager.Config config = plugin.getConfigManager().getConfig("packages.yml");
+        ConfigurationSection packages = config.get().getConfigurationSection("packages");
         if (args.length == 0) {
             Package pkg = Package.getDefaultPackageInstance();
-            pkg.setDrops(new HashSet<>(), true);
+            packages.getConfigurationSection(pkg.getPackageName()).set("items", "");
+            config.save().reload();
             new Message(messages.getString("reset_items"), sender, true).setToggleable(true).setPlaceholders(getPlaceholderMap(sender, pkg)).chat();
         } else if (args.length == 1) {
             if (!Package.isValidPackageName(args[0])) {
@@ -33,7 +34,8 @@ public class ResetItemsCommand extends SubCommand {
                 return;
             }
             Package pkg = new Package(args[0]);
-            pkg.resetItems();
+            packages.getConfigurationSection(pkg.getPackageName()).set("items", "");
+            config.save().reload();
             new Message(messages.getString("reset_items"), sender, true).setToggleable(true).setPlaceholders(getPlaceholderMap(sender, pkg)).chat();
         }
     }

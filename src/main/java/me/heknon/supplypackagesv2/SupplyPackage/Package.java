@@ -1,6 +1,9 @@
 package me.heknon.supplypackagesv2.SupplyPackage;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import de.tr7zw.nbtapi.NBTItem;
+import jdk.nashorn.internal.parser.JSONParser;
 import me.heknon.supplypackagesv2.Errors.ConfigurationSectionNotFoundException;
 import me.heknon.supplypackagesv2.Errors.PackageItemException;
 import me.heknon.supplypackagesv2.Errors.PackageNotExistException;
@@ -15,7 +18,9 @@ import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.json.simple.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.*;
 
 public class Package {
@@ -98,10 +103,15 @@ public class Package {
         ConfigManager.Config config = this.getPackagesConfig();
         ConfigurationSection section = config.get().getConfigurationSection("packages").getConfigurationSection(this.packageName);
         ConfigurationSection items = section.getConfigurationSection("items");
+        if (items == null) {
+            Bukkit.getLogger().severe("items section does not exist in packages.yml - " + this.packageName);
+            return new HashSet<ItemStack>(Collections.singletonList(new ItemStack(Material.AIR, 0)));
+        }
         for (String key : items.getKeys(false)) {
             ConfigurationSection curr = items.getConfigurationSection(key);
             String materialStr = curr.getString("material");
             String amountStr = curr.getString("amount");
+            String damageStr = curr.getString("damage");
             ConfigurationSection nbt = curr.getConfigurationSection("NBT");
             int amount;
             Material material;
@@ -117,15 +127,23 @@ public class Package {
             } else {
                 amount = Integer.parseInt(amountStr);
             }
+            short damage = -3526;
+            if (damageStr != null) {
+                if (!Utils.isNumeric(damageStr)){
+                    Bukkit.getLogger().severe("SupplyPackagesV2 - packages.yml | items:" + key + ":damage " + "^ Entered amount \"" + damageStr + "\" is not a valid number! The number will default to 0!!!");
+                    damage = 0;
+                }
+                damage = (short) Double.parseDouble(damageStr);
+            }
             HashMap<String, String> nbtData = nbt == null ? null : Utils.getConfigCorrespondingKeyValueMap(nbt);
-            ItemStack item = new ItemStack(material, amount);
+            ItemStack item = (damage != -3526 && damage != 0) ? new ItemStack(material, amount, (byte)damage) : new ItemStack(material, amount);
             NBTItem nbtItem = new NBTItem(item);
             if (nbtData != null) {
                 for (String nbtKey : nbtData.keySet()) {
                     String nbtValue = nbtData.get(nbtKey);
                     if (Utils.isNumeric(nbtValue) || Utils.stringIsBoolean(nbtValue)) {
                         if (Utils.isNumeric(nbtValue)) {
-                            nbtItem.setInteger(nbtKey, Integer.parseInt(nbtValue));
+                            nbtItem.setInteger(nbtKey, (int)Double.parseDouble(nbtValue));
                         } else if (Utils.stringIsBoolean(nbtValue)){
                             nbtItem.setBoolean(nbtKey, Boolean.parseBoolean(nbtValue));
                         }
@@ -160,13 +178,34 @@ public class Package {
      */
     public void setDrops(Set<ItemStack> drops, boolean changeConfig) {
         if (!changeConfig) setDrops(drops);
+        this.drops = drops;
         ConfigManager.Config config = this.getPackagesConfig();
         ConfigurationSection section = config.get().getConfigurationSection("packages").getConfigurationSection(this.packageName);
         section.set("items", null);
+        section.createSection("items");
+        ConfigurationSection items = section.getConfigurationSection("items");
+        int count = 0;
         for (ItemStack item : drops) {
-            section.set("items." + item.getType().toString(), item.getAmount());
+            count++;
+            NBTItem nbt = new NBTItem(item);
+            items.createSection(String.valueOf(count));
+            ConfigurationSection currSection = items.getConfigurationSection(String.valueOf(count));
+            currSection.createSection("NBT");
+            currSection.set("material", item.getType().toString());
+            currSection.set("amount", item.getAmount());
+            if (item.getDurability() != -3526 && item.getDurability() != 0) currSection.set("damage", item.getDurability());
+            ConfigurationSection nbtSection = currSection.getConfigurationSection("NBT");
+            if (nbt.hasNBTData()) {
+                java.lang.reflect.Type mapType = new TypeToken<Map<String, Object>>(){}.getType();
+                Gson gson = new Gson();
+                Map<String, Object> json = gson.fromJson(nbt.asNBTString(), mapType);
+                for (Map.Entry<String, Object> keyVal : json.entrySet()) {
+                    String value = keyVal.getValue().toString();
+                    if (value.charAt(value.length() - 1) == 'b') value = value.substring(0, value.length() - 1);
+                    nbtSection.set(keyVal.getKey(), value);
+                }
+            }
         }
-        this.drops = drops;
         config.save();
         config.reload();
     }

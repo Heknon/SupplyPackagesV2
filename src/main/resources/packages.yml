@@ -13,6 +13,8 @@ packages:
       2:
         material: "DIAMOND"
         amount: 1
+        NBT:
+          Unbreakable: true
       3:
         material: "BOOK"
         amount: 64

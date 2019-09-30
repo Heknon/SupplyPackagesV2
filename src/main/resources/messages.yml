@@ -15,6 +15,10 @@
 # "package_received" - the message sent to the receiver of a package - when a name is specified in the summon command.
 # "signal_received" - the message received when receiving a signal
 # "signal_sent" - the message received when sending a signal
+# "reload" the message sent on reload
+# "permission_missing" missing permission message
+# "reset_items" sent when running the resetitems command
+# "added_item" sent on additem command
 # |#################################################
 # |################# PLACEHOLDERS ##################
 # |#################################################
@@ -23,6 +27,11 @@
 # {sender} the name of the sender of an item
 # {package_name} the name of the package summoned
 # {x}, {y}, {z} the x, y, z of where the package will land
+# {permission} the permission for the command - only in missing permissions message...
+# {item_name} name of the item added
+# {amount} amount of the item added
+# {durability} the durability of the item added
+# {nbt} the nbt of the item added
 # |############################################################
 
 help: "
@@ -58,4 +67,13 @@ reload: "&5&l[&c&lSupply&f&lPackages&c&lV2&5&l] &7Reloaded in &e{time}ms"
 permission_missing: "&cMissing permission: &e{permission}"
 
 reset_items: "&5&l[&c&lSupply&f&lPackages&c&lV2&5&l] &cThe items for &e{package_name} &chave been reset!"
+
+added_item: "
+  &5&l[&c&lSupply&f&lPackages&c&lV2&5&l]\n
+  &6Item Added to {package_name}!\n
+  &eItem Name: {item_name}\n
+  &eAmount: {amount}\n
+  &eDurability: {durability}\n
+  &cNBT:\n
+      &9{nbt}                                "
 
